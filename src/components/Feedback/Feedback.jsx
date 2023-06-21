@@ -9,26 +9,61 @@ export class Feedback extends Component {
     bad: 0,
   };
 
+  componentDidMount() {
+    const storedStats = localStorage.getItem('feedbackStats');
+    if (storedStats) {
+      const { good, neutral, bad } = JSON.parse(storedStats);
+      this.setState({ good, neutral, bad });
+    }
+  }
+  componentDidUpdate() {
+    const { good, neutral, bad } = this.state;
+    const statsToStore = { good, neutral, bad };
+    localStorage.setItem('feedbackStats', JSON.stringify(statsToStore));
+  }
+
+  addGood = () => {
+    this.setState(state => ({
+      good: state.good + 1,
+    }));
+  };
+  addNeutral = () => {
+    this.setState(state => ({
+      neutral: state.neutral + 1,
+    }));
+  };
+  addBad = () => {
+    this.setState(state => ({
+      bad: state.bad + 1,
+    }));
+  };
+
   render() {
     return (
       <section>
         <h2>Please leave feedback</h2>
-        <ul>
+        <ul className="btn-list">
           <li>
-            <button>Good</button>
+            <button type="button" className="btn" onClick={this.addGood}>
+              Good
+            </button>
           </li>
           <li>
-            <button>Neutral</button>
+            <button type="button" className="btn" onClick={this.addNeutral}>
+              Neutral
+            </button>
           </li>
           <li>
-            <button>Bad</button>
+            <button type="button" className="btn" onClick={this.addBad}>
+              Bad
+            </button>
           </li>
         </ul>
         <h2>Statistics</h2>
-        <ul>
-          <li>Good: 3</li>
-          <li>Neutral: 2</li>
-          <li>Bad: 2</li>
+        <ul className="stat-list">
+          <li>Good: {this.state.good}</li>
+          <li>Neutral: {this.state.neutral}</li>
+          <li>Bad: {this.state.bad}</li>
         </ul>
       </section>
     );
